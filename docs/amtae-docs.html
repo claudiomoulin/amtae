@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMTAE – Documentación Técnico-Funcional</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f6f9;color:#222;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  header{background:#003366;color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-shrink:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+  header h1{font-size:1.25rem;font-weight:700;letter-spacing:.5px}
+  header span{font-size:.85rem;opacity:.75}
+  #layout{display:flex;flex:1;overflow:hidden}
+  #sidebar{width:270px;min-width:220px;background:#1a2940;overflow-y:auto;flex-shrink:0;padding-bottom:32px}
+  #sidebar::-webkit-scrollbar{width:6px}
+  #sidebar::-webkit-scrollbar-thumb{background:#334}
+  .nav-group{border-bottom:1px solid #223}
+  .nav-group-title{color:#8ab4e8;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;padding:14px 18px 6px;cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center}
+  .nav-group-title:hover{color:#cde}
+  .nav-group-title .arrow{transition:transform .2s;font-size:.8rem}
+  .nav-group-title.open .arrow{transform:rotate(90deg)}
+  .nav-items{display:none;padding:0 0 8px 0}
+  .nav-items.open{display:block}
+  .nav-item{display:block;padding:7px 18px 7px 28px;color:#b8cce4;font-size:.82rem;cursor:pointer;text-decoration:none;border-left:3px solid transparent;transition:all .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nav-item:hover{background:#243755;color:#fff;border-left-color:#4a90d9}
+  .nav-item.active{background:#1e3a5f;color:#fff;border-left-color:#4a90d9;font-weight:600}
+  .nav-sub{display:block;padding:4px 18px 4px 36px;color:#8aa8c8;font-size:.77rem;cursor:pointer;border-left:3px solid transparent;transition:all .15s}
+  .nav-sub:hover{background:#243755;color:#ddd;border-left-color:#4a90d9}
+  .nav-sub.active{background:#1e3a5f;color:#fff;border-left-color:#4a90d9}
+  #content{flex:1;overflow-y:auto;padding:28px 36px;background:#f4f6f9}
+  #content::-webkit-scrollbar{width:8px}
+  #content::-webkit-scrollbar-thumb{background:#ccc;border-radius:4px}
+  .page{display:none}
+  .page.active{display:block}
+  .home-card{background:#fff;border-radius:10px;padding:32px 36px;box-shadow:0 2px 10px rgba(0,0,0,.07);max-width:800px;margin:0 auto}
+  .home-card h2{color:#003366;font-size:1.6rem;margin-bottom:10px}
+  .home-card p{color:#555;line-height:1.7;margin-bottom:10px}
+  .home-card .stats{display:flex;gap:20px;margin-top:20px;flex-wrap:wrap}
+  .stat{background:#f0f5ff;border-radius:8px;padding:16px 24px;text-align:center;flex:1;min-width:120px}
+  .stat .num{font-size:2rem;font-weight:700;color:#003366}
+  .stat .lbl{font-size:.78rem;color:#667;margin-top:4px}
+  .section-card{background:#fff;border-radius:10px;padding:28px 32px;box-shadow:0 2px 10px rgba(0,0,0,.07);margin-bottom:24px;max-width:960px}
+  .section-card h2{color:#003366;font-size:1.3rem;border-bottom:2px solid #e8ecf5;padding-bottom:10px;margin-bottom:18px}
+  .section-card h3{color:#1a5276;font-size:1rem;margin:20px 0 8px;font-weight:600}
+  .section-card h4{color:#2471a3;font-size:.9rem;margin:14px 0 6px;font-weight:600}
+  .section-card p{color:#444;line-height:1.7;margin-bottom:10px;font-size:.9rem}
+  .section-card ul{padding-left:20px;margin-bottom:10px}
+  .section-card li{color:#444;font-size:.88rem;line-height:1.7;margin-bottom:3px}
+  .badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:.72rem;font-weight:600;margin-right:5px;margin-bottom:4px}
+  .badge-apex{background:#fde8b8;color:#7d4e00}
+  .badge-obj{background:#d5f0e8;color:#1a5c3a}
+  .badge-field{background:#e8e8fd;color:#2a2a7d}
+  .badge-lwc{background:#ddeeff;color:#003399}
+  .badge-flow{background:#fce4ec;color:#880e4f}
+  .table-wrap{overflow-x:auto;margin:12px 0}
+  table{border-collapse:collapse;width:100%;font-size:.83rem}
+  th{background:#003366;color:#fff;padding:9px 12px;text-align:left;font-weight:600;font-size:.8rem}
+  td{padding:8px 12px;border-bottom:1px solid #edf0f7;vertical-align:top;color:#333;line-height:1.5}
+  tr:hover td{background:#f7f9ff}
+  .pill{display:inline-block;background:#e8f0ff;color:#1a3a7d;border-radius:4px;padding:2px 7px;font-size:.75rem;font-family:monospace;white-space:nowrap}
+  .flow-step{display:flex;gap:0;margin:12px 0;flex-wrap:wrap}
+  .fs{background:#f0f5ff;border:1px solid #c8d8f8;border-radius:6px;padding:8px 14px;font-size:.8rem;color:#223;margin:4px;position:relative}
+  .fs:not(:last-child)::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:#4a90d9;font-weight:700;font-size:.9rem;z-index:1}
+  .alert{background:#fff8e1;border-left:4px solid #f9a825;padding:10px 14px;border-radius:4px;font-size:.84rem;color:#555;margin:10px 0}
+  .tag{font-family:monospace;font-size:.8rem;background:#f0f0f0;border:1px solid #ddd;border-radius:3px;padding:1px 5px;color:#444}
+</style>
+</head>
+<body>
+<header>
+  <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234a90d9'/><text x='16' y='22' text-anchor='middle' font-size='14' font-weight='bold' fill='white' font-family='Arial'>A</text></svg>" alt="AMTAE" style="height:36px;border-radius:6px">
+  <div>
+    <h1>AMTAE – Documentación Técnico-Funcional</h1>
+    <span>Asociación Mutual de Trabajadores de la Administración del Estado · Salesforce CRM</span>
+  </div>
+</header>
+<div id="layout">
+<aside id="sidebar">
+  <!-- HOME -->
+  <div class="nav-group">
+    <div class="nav-item active" style="padding-left:18px;border-left:3px solid #4a90d9;font-weight:600;color:#fff" onclick="show('home')">&#127968; Inicio</div>
+  </div>
+  <!-- LWC -->
+  <div class="nav-group">
+    <div class="nav-group-title open" onclick="toggleGroup(this)">&#9889; Componentes LWC <span class="arrow">&#9654;</span></div>
+    <div class="nav-items open">
+      <span class="nav-sub" style="color:#6a8fae;font-size:.7rem;padding-left:28px">— Pagos y Cobros —</span>
+      <a class="nav-item" onclick="show('lwc-validarPagoUno')">validarPagoUno</a>
+      <a class="nav-item" onclick="show('lwc-validarMercadoPago')">validarMercadoPago</a>
+      <a class="nav-item" onclick="show('lwc-cobrarLwc')">cobrarLwc</a>
+      <a class="nav-item" onclick="show('lwc-botonValidarCBU')">botonValidarCBU</a>
+      <a class="nav-item" onclick="show('lwc-consultarEstadoSubscripcion')">consultarEstadoSubscripcion</a>
+      <a class="nav-item" onclick="show('lwc-cancelarSubscripcion')">cancelarSubscripcion</a>
+      <a class="nav-item" onclick="show('lwc-actualizarTerminos')">actualizarTerminos</a>
+      <span class="nav-sub" style="color:#6a8fae;font-size:.7rem;padding-left:28px">— Alta de Socios —</span>
+      <a class="nav-item" onclick="show('lwc-botonAltaAmtae')">botonAltaAmtae</a>
+      <a class="nav-item" onclick="show('lwc-botonAltaAdherente')">botonAltaAdherente</a>
+      <a class="nav-item" onclick="show('lwc-enviarAltaPlenario')">enviarAltaPlenario</a>
+      <a class="nav-item" onclick="show('lwc-cotizarPlanLwc')">cotizarPlanLwc</a>
+      <span class="nav-sub" style="color:#6a8fae;font-size:.7rem;padding-left:28px">— Estado de Cuenta —</span>
+      <a class="nav-item" onclick="show('lwc-estadoCuenta')">estadoCuenta</a>
+      <a class="nav-item" onclick="show('lwc-estadoCuentaCliente')">estadoCuentaCliente</a>
+      <a class="nav-item" onclick="show('lwc-estadoCuentaEnviado')">estadoCuentaEnviado</a>
+      <span class="nav-sub" style="color:#6a8fae;font-size:.7rem;padding-left:28px">— Oportunidad / Cuenta —</span>
+      <a class="nav-item" onclick="show('lwc-accountContainer')">accountContainer</a>
+      <a class="nav-item" onclick="show('lwc-opportunityRecuperoMora')">opportunityRecuperoMora</a>
+      <a class="nav-item" onclick="show('lwc-convertirLeadLwc')">convertirLeadLwc</a>
+      <a class="nav-item" onclick="show('lwc-registroEventos')">registroEventos</a>
+      <span class="nav-sub" style="color:#6a8fae;font-size:.7rem;padding-left:28px">— Email —</span>
+      <a class="nav-item" onclick="show('lwc-enviarEmaillwc')">enviarEmaillwc</a>
+      <a class="nav-item" onclick="show('lwc-enviarEmailOportunidad')">enviarEmailOportunidad</a>
+      <span class="nav-sub" style="color:#6a8fae;font-size:.7rem;padding-left:28px">— Administración —</span>
+      <a class="nav-item" onclick="show('lwc-getComercializadoresLWC')">getComercializadoresLWC</a>
+      <a class="nav-item" onclick="show('lwc-batchExecutor')">batchExecutor</a>
+      <a class="nav-item" onclick="show('lwc-readCSVFileInLWC')">readCSVFileInLWC</a>
+      <a class="nav-item" onclick="show('lwc-snakeGame')">snakeGame</a>
+      <a class="nav-item" onclick="show('lwc-botonPago')">botonPago</a>
+    </div>
+  </div>
+  <!-- APEX -->
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleGroup(this)">&#9881; Clases Apex <span class="arrow">&#9654;</span></div>
+    <div class="nav-items">
+      <a class="nav-item" onclick="show('apex-mercadopago')">MercadoPago</a>
+      <a class="nav-item" onclick="show('apex-pagouno')">Pago Uno</a>
+      <a class="nav-item" onclick="show('apex-cbu')">Validación CBU</a>
+      <a class="nav-item" onclick="show('apex-alta')">Alta de Socios</a>
+      <a class="nav-item" onclick="show('apex-crm')">Integración CRM</a>
+      <a class="nav-item" onclick="show('apex-account')">Account / Opportunity</a>
+      <a class="nav-item" onclick="show('apex-email')">Email</a>
+      <a class="nav-item" onclick="show('apex-lead')">Lead</a>
+      <a class="nav-item" onclick="show('apex-cases')">Cases</a>
+      <a class="nav-item" onclick="show('apex-comercializadores')">Comercializadores</a>
+      <a class="nav-item" onclick="show('apex-admin')">Admin / Utilidades</a>
+    </div>
+  </div>
+  <!-- OBJETOS -->
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleGroup(this)">&#128466; Objetos Salesforce <span class="arrow">&#9654;</span></div>
+    <div class="nav-items">
+      <a class="nav-item" onclick="show('obj-account')">Account (PersonAccount)</a>
+      <a class="nav-item" onclick="show('obj-opportunity')">Opportunity</a>
+      <a class="nav-item" onclick="show('obj-medcobro')">Medio_de_Cobro__c</a>
+      <a class="nav-item" onclick="show('obj-entradamc')">Medio_de_Cobro_entry__c</a>
+      <a class="nav-item" onclick="show('obj-subsol')">SubscripcionSolicitud__c</a>
+      <a class="nav-item" onclick="show('obj-subact')">SubscripcionActualizacion__c</a>
+      <a class="nav-item" onclick="show('obj-geo')">Localidad / Organismo / Filial</a>
+      <a class="nav-item" onclick="show('obj-comercializador')">Comercializador__c</a>
+      <a class="nav-item" onclick="show('obj-metadata')">Custom Metadata</a>
+    </div>
+  </div>
+  <!-- VF & AURA -->
+  <div class="nav-group">
+    <div class="nav-group-title" onclick="toggleGroup(this)">&#128196; Visualforce &amp; Aura <span class="arrow">&#9654;</span></div>
+    <div class="nav-items">
+      <a class="nav-item" onclick="show('vf-pages')">Visualforce Pages</a>
+      <a class="nav-item" onclick="show('aura-components')">Aura Components</a>
+    </div>
+  </div>
+</aside>
+<main id="content">
+
+<!-- HOME -->
+<div id="home" class="page active">
+  <div class="home-card">
+    <h2>Documentación Técnico-Funcional · AMTAE</h2>
+    <p>Este documento centraliza la documentación funcional del CRM Salesforce de la <strong>Asociación Mutual de Trabajadores de la Administración del Estado (AMTAE)</strong>. Cubre los componentes LWC, las clases Apex, los objetos de datos y las páginas Visualforce/Aura, con foco en <em>qué hace cada pieza</em> y <em>cómo interactúa con el resto del sistema</em>.</p>
+    <p>Usa el menú lateral para navegar. Las secciones se irán completando y actualizando a medida que se incorpore metadata de flujos y objetos adicional.</p>
+    <div class="stats">
+      <div class="stat"><div class="num">25</div><div class="lbl">Componentes LWC</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl">Componentes Aura</div></div>
+      <div class="stat"><div class="num">80+</div><div class="lbl">Clases Apex</div></div>
+      <div class="stat"><div class="num">25</div><div class="lbl">Páginas VF</div></div>
+      <div class="stat"><div class="num">9+</div><div class="lbl">Objetos Custom</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LWC ===================== -->
+
+<!-- validarPagoUno -->
+<div id="lwc-validarPagoUno" class="page">
+<div class="section-card">
+<h2>&#9889; validarPagoUno</h2>
+<span class="badge badge-lwc">LWC</span><span class="badge badge-apex">Quick Action</span>
+<p><strong>Propósito:</strong> Ejecuta el flujo completo de cobro con tarjeta de crédito a través de la pasarela <strong>Pago Uno</strong>: valida la cuenta, tokeniza la tarjeta y realiza el cobro grupal. Si el monto no coincide exactamente, genera un ajuste.</p>
+<h3>Precondiciones</h3>
+<ul>
+  <li>La Oportunidad debe tener <span class="pill">Medio_de_Pago__c = 'Tarjeta'</span> y <span class="pill">Medio_Verificado__c = false</span>.</li>
+  <li>Debe tener al menos un OpportunityLineItem (plan cotizado).</li>
+  <li>La Account vinculada debe pasar la validación de campos requeridos (<span class="pill">accountValidate</span>).</li>
+  <li>El BIN de la tarjeta ingresada debe existir en los registros de <span class="pill">Medio_de_Cobro__c</span>.</li>
+</ul>
+<h3>Flujo de ejecución</h3>
+<div class="flow-step">
+  <div class="fs">1. Al abrir: getDataOppForPU</div>
+  <div class="fs">2. accountValidate</div>
+  <div class="fs">3. Muestra formulario tarjeta</div>
+  <div class="fs">4. buscarMedioCobro (BIN lookup)</div>
+  <div class="fs">5. generarTokenPagoUno</div>
+  <div class="fs">6. ejecutarCobroGrupal</div>
+  <div class="fs">7. Si monto ≠ esperado → ejecutarAjustes</div>
+  <div class="fs">8. crearEntradaMedioCobro</div>
+</div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos relevantes</th></tr>
+<tr><td>Opportunity</td><td>Medio_de_Pago__c, Medio_Verificado__c, Amount, Plan__c, AccountId, HasOpportunityLineItem</td></tr>
+<tr><td>Account</td><td>FirstName, LastName, PersonEmail, CUIT_Titular__pc, Gender__pc, Cumpleanios__pc, BillingStreet, Ocupacion__c</td></tr>
+<tr><td>Medio_de_Cobro__c</td><td>Nombre_banco__c, Code__c (BIN 6/4/2 dígitos)</td></tr>
+<tr><td>Medio_de_Cobro_entry__c</td><td>Tipo__c='Tarjeta', Opportunity__c, Token__c, ExternalReference__c</td></tr>
+<tr><td>MercadoPago__mdt</td><td>MP_Amount__c (monto de validación)</td></tr>
+<tr><td>Monto_Validacion_Pago_Uno__mdt</td><td>Monto__c (monto de validación PU)</td></tr>
+</table></div>
+<h3>Clases Apex involucradas</h3>
+<span class="badge badge-apex">ValidarPagoUnoController</span>
+<span class="badge badge-apex">PagoUnoSolicitudToken</span>
+<span class="badge badge-apex">PagoUnoEjecutarCobroGrupal</span>
+<span class="badge badge-apex">PagoUnoEjecutarAjustes</span>
+<span class="badge badge-apex">AccountController</span>
+<span class="badge badge-apex">CalloutControllerPagoUno</span>
+</div></div>
+
+<!-- validarMercadoPago -->
+<div id="lwc-validarMercadoPago" class="page">
+<div class="section-card">
+<h2>&#9889; validarMercadoPago</h2>
+<span class="badge badge-lwc">LWC</span><span class="badge badge-apex">Quick Action</span>
+<p><strong>Propósito:</strong> Crea una suscripción de débito automático en <strong>MercadoPago</strong> desde una Oportunidad. El componente valida el estado de la Opp y la cuenta antes de permitir el alta de la suscripción mensual.</p>
+<h3>Precondiciones</h3>
+<ul>
+  <li><span class="pill">Medio_de_Pago__c = 'Mercado Pago'</span> y <span class="pill">Medio_Verificado__c = false</span>.</li>
+  <li><span class="pill">StageName = 'Pendiente de Cierre'</span>.</li>
+  <li>La Account debe pasar <span class="pill">accountValidate</span> (campos requeridos completos).</li>
+  <li>La Oportunidad debe tener al menos un producto (OpportunityLineItem).</li>
+</ul>
+<h3>Flujo de ejecución</h3>
+<div class="flow-step">
+  <div class="fs">1. Al abrir: getDataOppForMP</div>
+  <div class="fs">2. accountValidate</div>
+  <div class="fs">3. retornarFechaVigencia</div>
+  <div class="fs">4. Muestra formulario (nombre, monto, email, frecuencia)</div>
+  <div class="fs">5. crearSubscripcion → MP API</div>
+  <div class="fs">6. Actualiza Medio_Verificado__c</div>
+</div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos relevantes</th></tr>
+<tr><td>Opportunity</td><td>Medio_de_Pago__c, Medio_Verificado__c, StageName, Amount, Plan__c, HasOpportunityLineItem</td></tr>
+<tr><td>Account</td><td>Email_MercadoPago__c (campo custom)</td></tr>
+<tr><td>Medio_de_Cobro__c</td><td>SubscriptionId__c, Monto__c, Name</td></tr>
+</table></div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">validarMercadoPagoController</span>
+<span class="badge badge-apex">CrearSubscripcion</span>
+<span class="badge badge-apex">CalloutControllerMercadoPago</span>
+<span class="badge badge-apex">AccountController</span>
+</div></div>
+
+<!-- cobrarLwc -->
+<div id="lwc-cobrarLwc" class="page">
+<div class="section-card">
+<h2>&#9889; cobrarLwc</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Permite realizar un cobro manual con tarjeta de crédito desde el registro de Account (socio activo). Incluye una animación de flip visual de tarjeta para mejorar la experiencia del usuario. También consulta el estado de cuenta del socio en el sistema AMTAE antes de permitir el cobro.</p>
+<h3>Flujo de ejecución</h3>
+<div class="flow-step">
+  <div class="fs">1. Carga datos del socio (Id Titular)</div>
+  <div class="fs">2. Consulta estado de cuenta CRM</div>
+  <div class="fs">3. Muestra formulario de tarjeta con flip animation</div>
+  <div class="fs">4. Solicita token Pago Uno</div>
+  <div class="fs">5. Ejecuta cobro grupal</div>
+</div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos relevantes</th></tr>
+<tr><td>Account</td><td>Id_Titular__c, Estado_del_Socio__c, Plan__c</td></tr>
+</table></div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">cobrarController</span>
+<span class="badge badge-apex">CobrarPagoUnoSolicitudToken</span>
+<span class="badge badge-apex">CobrarPagoUnoEjecutarCobro</span>
+<span class="badge badge-apex">CobrarPagoUnoEjecutarAjustes</span>
+</div></div>
+
+<!-- botonValidarCBU -->
+<div id="lwc-botonValidarCBU" class="page">
+<div class="section-card">
+<h2>&#9889; botonValidarCBU</h2>
+<span class="badge badge-lwc">LWC</span><span class="badge badge-apex">Quick Action</span>
+<p><strong>Propósito:</strong> Valida un CBU contra un webservice externo comparando con el CUIT/CUIL del titular. Si la validación es exitosa, actualiza la Oportunidad como medio verificado y crea un registro <span class="pill">Medio_de_Cobro_entry__c</span> con los datos bancarios.</p>
+<h3>Precondiciones</h3>
+<ul>
+  <li><span class="pill">Medio_de_Pago__c = 'CBU'</span> y <span class="pill">Medio_Verificado__c = false</span>.</li>
+  <li>La Account asociada debe pasar <span class="pill">accountValidate</span>.</li>
+  <li>La Oportunidad debe tener al menos un producto cotizado.</li>
+</ul>
+<h3>Flujo de ejecución</h3>
+<div class="flow-step">
+  <div class="fs">1. Al abrir: getOportunidadInfo + accountValidate</div>
+  <div class="fs">2. Muestra formulario CBU (22 dígitos)</div>
+  <div class="fs">3. callWebService (CBU + CUIT)</div>
+  <div class="fs">4. Si COINCIDE → actualizarOportunidad</div>
+  <div class="fs">5. crearEntradaMedioCobro (CBU, CUIT)</div>
+</div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos relevantes</th></tr>
+<tr><td>Opportunity</td><td>Medio_de_Pago__c, Medio_Verificado__c, HasOpportunityLineItem, AccountId</td></tr>
+<tr><td>Account</td><td>CUIT_Titular__pc y todos los campos de accountValidate</td></tr>
+<tr><td>Medio_de_Cobro_entry__c</td><td>Tipo__c='CBU', CBU__c, CUIT__c, Opportunity__c</td></tr>
+</table></div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">CBUValidation</span>
+<span class="badge badge-apex">OportunidadController</span>
+<span class="badge badge-apex">AccountController</span>
+</div></div>
+
+<!-- consultarEstadoSubscripcion -->
+<div id="lwc-consultarEstadoSubscripcion" class="page">
+<div class="section-card">
+<h2>&#9889; consultarEstadoSubscripcion</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Consulta el estado actual de una suscripción de MercadoPago y actualiza el registro de <span class="pill">Medio_de_Cobro__c</span> en Salesforce según la respuesta de la API (autorizada, cancelada, pendiente).</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Al cargar: getIdSubscripcion</div>
+  <div class="fs">2. Click → consultarEstadoSubscripcion (MP API)</div>
+  <div class="fs">3. Muestra resultado: autorizada / cancelada / pendiente</div>
+  <div class="fs">4. Recarga página tras 1.5s</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">LlamarBuscarXSubscripciones</span>
+<span class="badge badge-apex">BuscarXSubscripciones</span>
+<span class="badge badge-apex">CalloutControllerMercadoPago</span>
+</div></div>
+
+<!-- cancelarSubscripcion -->
+<div id="lwc-cancelarSubscripcion" class="page">
+<div class="section-card">
+<h2>&#9889; cancelarSubscripcion</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Cancela una suscripción activa de MercadoPago. Muestra un popup de confirmación antes de proceder para evitar cancelaciones accidentales.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Al cargar: getIdSubscripcion</div>
+  <div class="fs">2. Click Cancelar → popup confirmación</div>
+  <div class="fs">3. Confirmar → cancelarSubscripcion (MP API)</div>
+  <div class="fs">4. Actualiza estado en SF + recarga</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">LlamarCancelarSubscripcion</span>
+<span class="badge badge-apex">CancelarSubscripcion</span>
+<span class="badge badge-apex">CalloutControllerMercadoPago</span>
+</div></div>
+
+<!-- actualizarTerminos -->
+<div id="lwc-actualizarTerminos" class="page">
+<div class="section-card">
+<h2>&#9889; actualizarTerminos</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Permite modificar el nombre y el monto de una suscripción activa de MercadoPago. Usa un flujo de dos pasos: formulario de modificación → popup de confirmación → llamada a la API de MP.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Al cargar: getNameYMontoSubscripcion</div>
+  <div class="fs">2. Click Modificar → popup formulario</div>
+  <div class="fs">3. Click Confirmar → popup confirmación</div>
+  <div class="fs">4. actualizarTerminos → @future callout a MP</div>
+  <div class="fs">5. Recarga página</div>
+</div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos</th></tr>
+<tr><td>Medio_de_Cobro__c (SubscripcionSolicitud__c)</td><td>Name, Monto__c, SubscriptionId__c</td></tr>
+<tr><td>SubscripcionActualizacion__c</td><td>Registra el histórico del cambio</td></tr>
+</table></div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">ActualizarTerminosController</span>
+<span class="badge badge-apex">ActualizarSubscripcion</span>
+<span class="badge badge-apex">CalloutControllerMercadoPago</span>
+</div></div>
+
+<!-- botonAltaAmtae -->
+<div id="lwc-botonAltaAmtae" class="page">
+<div class="section-card">
+<h2>&#9889; botonAltaAmtae</h2>
+<span class="badge badge-lwc">LWC</span><span class="badge badge-apex">Quick Action</span>
+<p><strong>Propósito:</strong> Ejecuta el alta plenaria completa en el sistema AMTAE. Procesa primero el titular y luego todos sus adherentes en secuencia, mostrando el resultado de cada paso en pantalla en tiempo real.</p>
+<h3>Precondiciones</h3>
+<ul>
+  <li>La Oportunidad debe tener <span class="pill">Medio_Verificado__c = true</span> (medio de pago validado).</li>
+  <li>El proceso llama a la API externa del sistema AMTAE (integración HTTP).</li>
+</ul>
+<h3>Flujo de ejecución</h3>
+<div class="flow-step">
+  <div class="fs">1. getOportunidadInfo (verifica Medio_Verificado__c)</div>
+  <div class="fs">2. procesarTitular → API AMTAE</div>
+  <div class="fs">3. Para cada adherente: procesarAdherente → API AMTAE</div>
+  <div class="fs">4. Muestra log de resultados en pantalla</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">procesarAlta</span>
+<span class="badge badge-apex">OportunidadController</span>
+<span class="badge badge-apex">DTOSocioAmtaeWS</span>
+</div></div>
+
+<!-- botonAltaAdherente -->
+<div id="lwc-botonAltaAdherente" class="page">
+<div class="section-card">
+<h2>&#9889; botonAltaAdherente</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Da de alta a un adherente individual en el sistema AMTAE. Se lanza automáticamente al conectarse el componente (generalmente desde una acción o flujo). Muestra animaciones de carga, éxito o error según el resultado.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. connectedCallback automático</div>
+  <div class="fs">2. procesarAdherente (adherenteId)</div>
+  <div class="fs">3. Muestra resultado (GIF success/error)</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">procesarAlta</span>
+</div></div>
+
+<!-- enviarAltaPlenario -->
+<div id="lwc-enviarAltaPlenario" class="page">
+<div class="section-card">
+<h2>&#9889; enviarAltaPlenario</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Panel de configuración previo al alta. Permite seleccionar el medio de pago y asignar el comercializador a la Oportunidad. Filtra los comercializadores disponibles según el usuario ALMA del dueño de la oportunidad.</p>
+<h3>Campos que maneja</h3>
+<div class="table-wrap"><table>
+<tr><th>Campo en Opportunity</th><th>Función</th></tr>
+<tr><td>Medio_de_Pago__c</td><td>Picklist editable directamente desde el componente</td></tr>
+<tr><td>Medio_Verificado__c</td><td>Controla habilitación del panel</td></tr>
+<tr><td>Codigo_Comercializador__c</td><td>ID del comercializador en AMTAE</td></tr>
+<tr><td>Nombre_Comercializador__c</td><td>Nombre del comercializador seleccionado</td></tr>
+<tr><td>Owner.Usuario_Alma__c</td><td>Filtra los comercializadores por usuario</td></tr>
+</table></div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">GetComercializadoresService</span>
+</div></div>
+
+<!-- cotizarPlanLwc -->
+<div id="lwc-cotizarPlanLwc" class="page">
+<div class="section-card">
+<h2>&#9889; cotizarPlanLwc</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Cotizador de planes de salud. Lee los productos del Pricebook de Salesforce según el plan seleccionado en la Oportunidad, calcula totales con edades de los adherentes y permite confirmar los OpportunityLineItems que componen la cotización final.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Lee Plan__c de la Oportunidad</div>
+  <div class="fs">2. Obtiene PricebookEntries del plan</div>
+  <div class="fs">3. Calcula cuotas según edades</div>
+  <div class="fs">4. Usuario confirma → crea/actualiza OpportunityLineItems</div>
+  <div class="fs">5. Actualiza Amount en la Oportunidad</div>
+</div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos relevantes</th></tr>
+<tr><td>Opportunity</td><td>Plan__c, Amount, Pricebook2Id</td></tr>
+<tr><td>OpportunityLineItem</td><td>UnitPrice, Quantity, PricebookEntryId</td></tr>
+<tr><td>PricebookEntry</td><td>UnitPrice, Product2.Name, Product2.Family</td></tr>
+<tr><td>Account</td><td>Age__pc (edades de titular y adherentes)</td></tr>
+</table></div>
+</div></div>
+
+<!-- estadoCuenta -->
+<div id="lwc-estadoCuenta" class="page">
+<div class="section-card">
+<h2>&#9889; estadoCuenta</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Visor interno multi-tab de los datos del socio en el sistema AMTAE. Muestra información traída del CRM externo en tiempo real, organizada en pestañas: Prestaciones, Cuotas, Servicios, Cuenta Corriente, Créditos y Socios del grupo.</p>
+<h3>Pestañas disponibles</h3>
+<ul>
+  <li><strong>Prestaciones</strong> — Historial de prestaciones médicas utilizadas</li>
+  <li><strong>Cuotas</strong> — Estado de pago de cuotas mensuales</li>
+  <li><strong>Servicios</strong> — Servicios habilitados para el socio</li>
+  <li><strong>Cuenta Corriente</strong> — Deudas y créditos en cuenta corriente</li>
+  <li><strong>Créditos</strong> — Créditos otorgados por la mutual</li>
+  <li><strong>Socios del grupo</strong> — Titular y adherentes</li>
+</ul>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">ResumenEstadoCuentaController</span>
+<span class="badge badge-apex">RetrieveDataSistemaAmtae</span>
+</div></div>
+
+<!-- estadoCuentaCliente -->
+<div id="lwc-estadoCuentaCliente" class="page">
+<div class="section-card">
+<h2>&#9889; estadoCuentaCliente</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Desde el registro de Account, permite al operador abrir el portal de estado de cuenta del <em>cliente</em> en Salesforce Sites, o enviar por email el link al cliente. La URL se construye con el <span class="pill">Id_Titular__c</span> del socio.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Wire Account → obtiene Id_Titular__c y PersonContactId</div>
+  <div class="fs">2. Botón "Ver" → abre URL en nueva pestaña</div>
+  <div class="fs">3. Botón "Enviar email" → runEstadoCuentaFlow (Flow de SF)</div>
+  <div class="fs">4. Muestra GIF animado de confirmación 3.3s</div>
+</div>
+<p>URL generada: <span class="tag">https://amtae.salesforcesites.com.ar/estadocuentacliente/?id={Id_Titular__c}</span></p>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">FlowController</span>
+</div></div>
+
+<!-- estadoCuentaEnviado -->
+<div id="lwc-estadoCuentaEnviado" class="page">
+<div class="section-card">
+<h2>&#9889; estadoCuentaEnviado</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Variante de <em>estadoCuentaCliente</em> que apunta al portal del <em>socio</em> (no del cliente). Permite al operador ver o enviar el estado de cuenta desde el registro de Account usando una URL diferente del sitio público.</p>
+<p>URL generada: <span class="tag">https://amtae.salesforcesites.com.ar/estadocuenta/?id={Id_Titular__c}</span></p>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">FlowController</span>
+</div></div>
+
+<!-- accountContainer -->
+<div id="lwc-accountContainer" class="page">
+<div class="section-card">
+<h2>&#9889; accountContainer</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Formulario inteligente de edición de Account que muestra u oculta campos laborales según la ocupación del socio. Además filtra el campo Localidad por la provincia seleccionada.</p>
+<h3>Lógica condicional de ocupación</h3>
+<div class="table-wrap"><table>
+<tr><th>Valor de Ocupacion__c</th><th>Campos adicionales que se muestran</th></tr>
+<tr><td>JUBILADO O PENSIONADO</td><td>Sección jubilado (organismo jubilación)</td></tr>
+<tr><td>MONOTRIBUTISTA</td><td>Sección monotributista (categoría)</td></tr>
+<tr><td>EMPLEADO PÚBLICO</td><td>Sección empleo público (organismo, CUIL)</td></tr>
+<tr><td>EMPLEADO PRIVADO / OTRO</td><td>Sección empleo privado (empresa)</td></tr>
+</table></div>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos</th></tr>
+<tr><td>Account</td><td>Ocupacion__c, Provincia__pc, + campos laborales condicionales</td></tr>
+<tr><td>Opportunity</td><td>Medio_Verificado__c (controla editabilidad)</td></tr>
+<tr><td>Localidad__c</td><td>ID_provincia__c (filtro de lookupFilter)</td></tr>
+</table></div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">OportunidadController</span>
+</div></div>
+
+<!-- opportunityRecuperoMora -->
+<div id="lwc-opportunityRecuperoMora" class="page">
+<div class="section-card">
+<h2>&#9889; opportunityRecuperoMora</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Permite agregar, editar o eliminar el producto "Mora" en los ítems de una Oportunidad. Sirve para recuperar cuotas impagas cargando un ítem de recupero con monto personalizado.</p>
+<h3>Estados del componente</h3>
+<ul>
+  <li>Sin recupero existente: muestra botón "Recupero Mora"</li>
+  <li>Con recupero existente: muestra botón "Editar" y "Eliminar" con el monto actual</li>
+</ul>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. connectedCallback: getExistingRecuperoMora</div>
+  <div class="fs">2. Click → getProductInfo (busca PricebookEntry "Mora")</div>
+  <div class="fs">3. Ingresa monto → createRecuperoMora</div>
+  <div class="fs">4. Eliminar → deleteRecuperoMora</div>
+</div>
+<h3>Objetos</h3>
+<span class="badge badge-obj">OpportunityLineItem</span>
+<span class="badge badge-obj">PricebookEntry</span>
+<span class="badge badge-obj">Opportunity</span> (campo <span class="pill">Con_recupero_mora__c</span>)
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">OpportunityRecuperoMoraController</span>
+</div></div>
+
+<!-- convertirLeadLwc -->
+<div id="lwc-convertirLeadLwc" class="page">
+<div class="section-card">
+<h2>&#9889; convertirLeadLwc</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Convierte un Lead en Account + Contact + Opportunity con validaciones previas: verifica el estado del Lead, que el propietario no sea una cola, y que no exista ya una Account con el mismo DNI.</p>
+<h3>Validaciones</h3>
+<ul>
+  <li><span class="pill">Status = 'Contactado'</span> (requisito para convertir)</li>
+  <li>OwnerId no comienza con <span class="pill">00G</span> (no puede ser una cola)</li>
+  <li>No existe Account con <span class="pill">Numero_Documento__pc</span> igual al <span class="pill">Document_Number__c</span> del Lead</li>
+</ul>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Wire Lead (Status, OwnerId, Document_Number__c)</div>
+  <div class="fs">2. Click Sí → valida estado y propietario</div>
+  <div class="fs">3. checkAccountIfExist (por DNI)</div>
+  <div class="fs">4. Si no existe → convertLead</div>
+  <div class="fs">5. Navega al Account creado</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">LeadConvertController</span>
+</div></div>
+
+<!-- registroEventos -->
+<div id="lwc-registroEventos" class="page">
+<div class="section-card">
+<h2>&#9889; registroEventos</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Muestra una tabla de eventos del sistema AMTAE asociados a un registro (Account u Opportunity). Traduce los IDs de eventos a nombres legibles usando un mapa de eventos del CRM.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Wire: obtenerEventosMapa (mapa id→nombre)</div>
+  <div class="fs">2. obtenerEventos (tipoRegistro, recordId)</div>
+  <div class="fs">3. Mapea nombres y formatea fechas</div>
+  <div class="fs">4. Renderiza tabla de eventos</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">EventosController</span>
+</div></div>
+
+<!-- enviarEmaillwc -->
+<div id="lwc-enviarEmaillwc" class="page">
+<div class="section-card">
+<h2>&#9889; enviarEmaillwc</h2>
+<span class="badge badge-lwc">LWC</span><span class="badge badge-apex">Headless Action</span>
+<p><strong>Propósito:</strong> Acción headless que abre el compositor de email estándar de Salesforce (<span class="pill">Global.SendEmail</span>) con el campo ToAddress pre-cargado. Si la Oportunidad tiene una Account con email, lo usa; si es un Lead, usa el email del Lead.</p>
+<h3>Objetos y Campos</h3>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campo</th></tr>
+<tr><td>Opportunity</td><td>Account.PersonEmail (pre-carga ToAddress)</td></tr>
+<tr><td>Lead</td><td>Email (pre-carga ToAddress)</td></tr>
+</table></div>
+</div></div>
+
+<!-- enviarEmailOportunidad -->
+<div id="lwc-enviarEmailOportunidad" class="page">
+<div class="section-card">
+<h2>&#9889; enviarEmailOportunidad</h2>
+<span class="badge badge-lwc">LWC</span><span class="badge badge-apex">Headless Action</span>
+<p><strong>Propósito:</strong> Versión simplificada de acción de email. Abre el compositor de email de Salesforce con un Asunto y Cuerpo de texto de ejemplo pre-cargados. No obtiene el email del destinatario automáticamente.</p>
+<div class="alert">Componente probablemente en desuso o de prueba. Para producción, usar <strong>enviarEmaillwc</strong> que auto-completa el ToAddress.</div>
+</div></div>
+
+<!-- getComercializadoresLWC -->
+<div id="lwc-getComercializadoresLWC" class="page">
+<div class="section-card">
+<h2>&#9889; getComercializadoresLWC</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Interfaz de administración para ejecutar y monitorear el batch de sincronización de comercializadores desde el sistema AMTAE. Muestra progreso en tiempo real con polling cada 3 segundos hasta que el job finaliza.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Click Ejecutar → executeBatch</div>
+  <div class="fs">2. Polling cada 3s → getBatchStatus</div>
+  <div class="fs">3. Muestra progreso % y log de estados</div>
+  <div class="fs">4. Al completar: muestra errores si hubiera</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">GetComercializadorController</span>
+</div></div>
+
+<!-- batchExecutor -->
+<div id="lwc-batchExecutor" class="page">
+<div class="section-card">
+<h2>&#9889; batchExecutor</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Herramienta de administración para ejecutar manualmente el batch de recuperación de datos del CRM AMTAE (<span class="pill">RetrieveDataSistemaAmtae</span>) con un rango de fechas personalizado. Muestra una barra de progreso y el log de estados en tiempo real mediante polling.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Ingresa fechaDesde / fechaHasta (default: últimos 3 días)</div>
+  <div class="fs">2. Click Ejecutar → executeBatch</div>
+  <div class="fs">3. Polling cada 3s → getBatchStatus</div>
+  <div class="fs">4. Barra de progreso + notificación al completar</div>
+  <div class="fs">5. Botón "Ver historial" → últimos 10 jobs</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">BatchExecutorController</span>
+<span class="badge badge-apex">RetrieveDataSistemaAmtae</span>
+</div></div>
+
+<!-- readCSVFileInLWC -->
+<div id="lwc-readCSVFileInLWC" class="page">
+<div class="section-card">
+<h2>&#9889; readCSVFileInLWC</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Permite cargar masivamente casos desde un archivo CSV. El usuario sube el archivo y el componente llama a un controlador Apex que procesa el contenido del ContentDocument y actualiza los casos correspondientes.</p>
+<h3>Flujo</h3>
+<div class="flow-step">
+  <div class="fs">1. Usuario sube archivo .csv</div>
+  <div class="fs">2. handleUploadFinished: toma documentId</div>
+  <div class="fs">3. readCSV (idContentDocument, idRecord)</div>
+  <div class="fs">4. Toast éxito/error + recarga</div>
+</div>
+<h3>Clases Apex</h3>
+<span class="badge badge-apex">ReadCSVController</span>
+</div></div>
+
+<!-- snakeGame -->
+<div id="lwc-snakeGame" class="page">
+<div class="section-card">
+<h2>&#9889; snakeGame</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Easter egg — juego Snake completo implementado en LWC. Tiene 3 modos de juego, manejo de highscore en localStorage y controles de teclado. No tiene funcionalidad de negocio.</p>
+<h3>Modos de juego</h3>
+<ul>
+  <li><strong>Classic</strong> — Snake clásico, choca con paredes y se muere</li>
+  <li><strong>Cut</strong> — La serpiente puede atravesar paredes (teleport)</li>
+  <li><strong>Ghost</strong> — La serpiente puede atravesar su propio cuerpo</li>
+</ul>
+<div class="alert">Este componente no interactúa con ningún objeto de Salesforce ni llama a clases Apex. Es puramente recreativo.</div>
+</div></div>
+
+<!-- botonPago -->
+<div id="lwc-botonPago" class="page">
+<div class="section-card">
+<h2>&#9889; botonPago</h2>
+<span class="badge badge-lwc">LWC</span>
+<p><strong>Propósito:</strong> Componente vacío (solo la clase JS sin lógica). Probablemente es un placeholder o fue reemplazado por otros componentes de cobro.</p>
+<div class="alert">No contiene lógica. Revisar si se puede eliminar o si está pendiente de implementación.</div>
+</div></div>
+
+<!-- ===================== APEX ===================== -->
+
+<!-- MercadoPago -->
+<div id="apex-mercadopago" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — MercadoPago</h2>
+<p>Conjunto de clases que gestiona la integración completa con la API de <strong>MercadoPago</strong> para cobros por débito automático (suscripciones).</p>
+
+<h3>validarMercadoPagoController</h3>
+<p>Controlador principal del componente LWC homónimo. Obtiene datos de la Oportunidad para pre-cargar el formulario de MP, valida fecha de vigencia y crea la suscripción.</p>
+<ul>
+  <li><span class="pill">getDataOppForMP(Id)</span> — Consulta Opportunity con Account.Email_MercadoPago__c</li>
+  <li><span class="pill">retornarFechaVigencia(vigenciaDesde)</span> — Calcula fecha de inicio de la suscripción</li>
+  <li><span class="pill">crearSubscripcion(...)</span> — Crea la suscripción vía <em>CrearSubscripcion.cls</em></li>
+</ul>
+
+<h3>CrearSubscripcion</h3>
+<p>Realiza el callout POST a la API de MP para crear la suscripción. Parsea la respuesta y actualiza <span class="pill">Medio_Verificado__c</span> y crea el registro <span class="pill">Medio_de_Cobro__c</span>.</p>
+
+<h3>CancelarSubscripcion</h3>
+<p>Envía solicitud de cancelación a MP (PUT con status=cancelled) y actualiza el registro en Salesforce.</p>
+
+<h3>BuscarXSubscripciones</h3>
+<p>Consulta el estado de una suscripción en MP por ID. Devuelve el estado actual (authorized, cancelled, pending, paused).</p>
+
+<h3>LlamarBuscarXSubscripciones / LlamarCancelarSubscripcion</h3>
+<p>Wrappers <span class="pill">@AuraEnabled</span> para exponer los métodos anteriores a LWC.</p>
+
+<h3>ActualizarTerminosController</h3>
+<p>Expone a LWC los métodos para leer y actualizar los términos de una suscripción (nombre, monto).</p>
+<ul>
+  <li><span class="pill">getNameYMontoSubscripcion(Id)</span> — Lee desde SubscripcionSolicitud__c o Medio_de_Cobro__c</li>
+  <li><span class="pill">actualizarTerminos(name, monto, IdSubscripcion)</span> — Llama a ActualizarSubscripcion vía @future</li>
+</ul>
+
+<h3>ActualizarSubscripcion</h3>
+<p>Clase con método <span class="pill">@future(callout=true)</span> que actualiza el precio del plan en la API de MP. Guarda un registro de auditoría en <span class="pill">SubscripcionActualizacion__c</span>.</p>
+
+<h3>CalloutControllerMercadoPago</h3>
+<p>Clase base para todas las llamadas HTTP a MP. Gestiona autenticación con <span class="pill">MercadoPago__mdt</span> (Access Token) y construye los encabezados de la petición.</p>
+
+<h3>MP_WebHooksTriggerHandler / MP_WebHooksTriggerCallout</h3>
+<p>Procesan las notificaciones webhook de MP (platform event). El handler identifica el tipo de evento (payment, subscription) y el callout consulta el estado actualizado en la API de MP para sincronizar con Salesforce.</p>
+
+<h3>NotificacionesMercadoPagoWs</h3>
+<p>REST Endpoint (<span class="pill">@RestResource</span>) que recibe los webhooks de MercadoPago via HTTP POST y publica un Platform Event para procesamiento asíncrono.</p>
+</div></div>
+
+<!-- Pago Uno -->
+<div id="apex-pagouno" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Pago Uno</h2>
+<p>Conjunto de clases para la pasarela de pagos <strong>Pago Uno</strong>, usada principalmente para cobros con tarjeta de crédito desde el CRM.</p>
+
+<h3>ValidarPagoUnoController</h3>
+<p>Controlador principal del componente <em>validarPagoUno</em>. Coordina la búsqueda de datos de la Oportunidad, el lookup de BIN de tarjeta y los métodos de cobro.</p>
+<ul>
+  <li><span class="pill">getDataOppForPU(Id)</span> — Consulta Opportunity + Account + OpportunityLineItem</li>
+  <li><span class="pill">buscarMedioCobro(bin)</span> — Busca en Medio_de_Cobro__c por prefijos de 6, 4 o 2 dígitos del BIN</li>
+  <li><span class="pill">generarTokenPagoUno(body)</span> — Delega en PagoUnoSolicitudToken</li>
+  <li><span class="pill">ejecutarCobroGrupal(body)</span> — Delega en PagoUnoEjecutarCobroGrupal</li>
+  <li><span class="pill">ejecutarAjustes(body)</span> — Delega en PagoUnoEjecutarAjustes</li>
+  <li><span class="pill">crearEntradaMedioCobro(...)</span> — Crea Medio_de_Cobro_entry__c y actualiza Oportunidad</li>
+</ul>
+
+<h3>PagoUnoSolicitudToken / CobrarPagoUnoSolicitudToken</h3>
+<p>Tokeniza los datos de la tarjeta de crédito enviando un POST a la API de Pago Uno. Retorna un token único de la sesión de cobro.</p>
+
+<h3>PagoUnoEjecutarCobroGrupal / CobrarPagoUnoEjecutarCobro</h3>
+<p>Ejecuta el cobro grupal usando el token generado. Interpreta la respuesta: APROBADA, DENEGADA o ADVERTENCIA. Si es APROBADA, retorna la referencia externa y el ID de transacción.</p>
+
+<h3>PagoUnoEjecutarAjustes / CobrarPagoUnoEjecutarAjustes</h3>
+<p>Realiza un ajuste de cobro cuando el monto cobrado no coincide exactamente con el monto esperado (diferencias de centavos o comisiones).</p>
+
+<h3>CalloutControllerPagoUno</h3>
+<p>Clase base para las llamadas HTTP a Pago Uno. Gestiona autenticación y endpoints usando Named Credentials o configuración custom.</p>
+</div></div>
+
+<!-- CBU -->
+<div id="apex-cbu" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Validación CBU</h2>
+
+<h3>CBUValidation</h3>
+<p>Realiza un callout a un webservice externo para validar que un CBU pertenece al titular según el CUIT/CUIL ingresado. Retorna 'COINCIDE' si la validación es exitosa o un mensaje de error en caso contrario.</p>
+<ul>
+  <li><span class="pill">callWebService(cbu, cuit)</span> — Llamada HTTP al servicio de validación</li>
+</ul>
+<div class="alert">El servicio externo de validación CBU requiere que la Named Credential correspondiente esté configurada en el org.</div>
+</div></div>
+
+<!-- Alta Socios -->
+<div id="apex-alta" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Alta de Socios</h2>
+
+<h3>procesarAlta</h3>
+<p>Clase central del proceso de alta en el sistema AMTAE. Expone dos métodos principales:</p>
+<ul>
+  <li><span class="pill">procesarTitular(opportunityId)</span> — Construye el DTO del titular desde la Oportunidad y sus datos de Account, y realiza el callout al webservice de AMTAE para dar de alta. Retorna JSON con status y lista de adherentes a procesar.</li>
+  <li><span class="pill">procesarAdherente(adherenteId)</span> — Procesa el alta de un Account adherente vinculado al titular.</li>
+</ul>
+
+<h3>DTOSocioAmtaeWS</h3>
+<p>Data Transfer Object que mapea los campos de Salesforce (Account, Opportunity) a la estructura requerida por el webservice de AMTAE para el alta de socios.</p>
+
+<h3>enviarEmailConAlta</h3>
+<p>Envía un email con el comprobante de alta adjunto tras completarse el proceso de incorporación del socio.</p>
+</div></div>
+
+<!-- CRM Integration -->
+<div id="apex-crm" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Integración CRM AMTAE</h2>
+<p>Conjunto de clases para recuperar datos del sistema CRM interno de AMTAE y sincronizarlos con Salesforce.</p>
+
+<h3>RetrieveDataSistemaAmtae</h3>
+<p>Clase principal que realiza llamadas al webservice del CRM AMTAE para obtener datos de socios (titulares y adherentes) en un rango de fechas dado.</p>
+
+<h3>BatchRetrieveCRMTitularesSistemaAmtae</h3>
+<p>Batch (<span class="pill">Database.Batchable</span>) que recupera y sincroniza los socios titulares desde el CRM AMTAE. Actualiza campos de Account como estado del socio, plan, organismo, filial, etc.</p>
+
+<h3>BatchRetrieveCRMAdherentesSistemaAmtae</h3>
+<p>Batch análogo para adherentes. Los procesa y vincula a sus titulares en Salesforce.</p>
+
+<h3>RetrieveDataSistemaAmtaeSchedule</h3>
+<p>Scheduler (<span class="pill">Schedulable</span>) que ejecuta automáticamente los batches de recuperación de datos según la configuración programada.</p>
+
+<h3>ResumenEstadoCuentaController</h3>
+<p>Controlador del componente <em>estadoCuenta</em>. Obtiene el resumen completo del socio del CRM AMTAE (prestaciones, cuotas, servicios, cuenta corriente, créditos, grupo familiar).</p>
+
+<h3>CRMSocios_Titulares / CRMSocios_Adherentes</h3>
+<p>Clases wrapper que modelan la respuesta JSON del webservice AMTAE para titulares y adherentes respectivamente.</p>
+
+<h3>SociosTitulares / SociosAdherentes</h3>
+<p>Clases de respuesta anidadas con los campos específicos de cada tipo de socio según el contrato del webservice.</p>
+
+<h3>CuentasResponseMessage</h3>
+<p>Wrapper genérico para los mensajes de respuesta de los webservices del CRM AMTAE.</p>
+</div></div>
+
+<!-- Account / Opportunity -->
+<div id="apex-account" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Account / Opportunity</h2>
+
+<h3>AccountController</h3>
+<ul>
+  <li><span class="pill">getAccountFromOpportunity(accountId)</span> — Devuelve Account con campos clave para componentes LWC.</li>
+  <li><span class="pill">getAccounts()</span> — Lista de accounts (uso interno).</li>
+  <li><span class="pill">accountValidate(accountId)</span> — Valida que la Account tenga todos los campos requeridos para el proceso de alta. Retorna 'Pass' o una lista de campos faltantes.</li>
+</ul>
+
+<h3>AccountTriggerHandler</h3>
+<p>Handler del trigger de Account (before insert/update). Ejecuta las siguientes operaciones:</p>
+<ul>
+  <li><strong>updateState</strong> — Actualiza Estado_del_Socio__c según datos del CRM</li>
+  <li><strong>updateSelectedPlan</strong> — Sincroniza Plan__c</li>
+  <li><strong>updateAddress</strong> — Normaliza campos de dirección</li>
+  <li><strong>updateOrganismos</strong> — Relaciona con Organismo__c</li>
+  <li><strong>updateFiliales</strong> — Relaciona con Filial__c</li>
+  <li><strong>validarEmails</strong> — Valida formato de emails</li>
+  <li><strong>relacionarComercializador</strong> — Asigna Comercializador__c por código</li>
+</ul>
+
+<h3>OportunidadController</h3>
+<ul>
+  <li><span class="pill">getOportunidadInfo(oportunidadId)</span> — Consulta Opportunity con Account y medio de pago para LWC</li>
+  <li><span class="pill">actualizarOportunidad(oportunidadId)</span> — Marca Medio_Verificado__c = true</li>
+  <li><span class="pill">crearEntradaMedioCobro(oppId, cbu, cuit)</span> — Crea registro Medio_de_Cobro_entry__c tipo CBU</li>
+</ul>
+
+<h3>OpportunityLineItemTriggerHandler</h3>
+<p>Handler del trigger de OpportunityLineItem. Mantiene consistencia entre los ítems de la cotización y el Amount total de la Oportunidad.</p>
+
+<h3>OpportunityRecuperoMoraController</h3>
+<ul>
+  <li><span class="pill">getProductInfo()</span> — Busca PricebookEntry del producto "Mora"</li>
+  <li><span class="pill">getExistingRecuperoMora(opportunityId)</span> — Verifica si ya existe un ítem de mora</li>
+  <li><span class="pill">createRecuperoMora(...)</span> — Crea o actualiza el OpportunityLineItem de mora</li>
+  <li><span class="pill">deleteRecuperoMora(opportunityId)</span> — Elimina el ítem de mora</li>
+</ul>
+</div></div>
+
+<!-- Email -->
+<div id="apex-email" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Email</h2>
+
+<h3>enviarEmailConAlta</h3>
+<p>Envía el email de bienvenida con el comprobante de alta en PDF adjunto, una vez completado el proceso de incorporación.</p>
+
+<h3>SendEmailWithAttachmentQueueable</h3>
+<p>Clase <span class="pill">Queueable</span> para envío asíncrono de emails con adjuntos. Permite enviar el comprobante sin bloquear la transacción del alta.</p>
+
+<h3>SendWelcomeEmailHelper</h3>
+<p>Helper para la generación y envío del email de bienvenida al nuevo socio, con los datos del plan y la mutual.</p>
+
+<h3>EmailMessageTriggerHandler</h3>
+<p>Handler del trigger de EmailMessage. Procesa eventos relacionados con emails entrantes o salientes para actualizar registros asociados (Oportunidad, Account).</p>
+
+<h3>FlowController</h3>
+<p>Controlador invocable desde LWC para ejecutar Flows de Salesforce programáticamente.</p>
+<ul>
+  <li><span class="pill">runEstadoCuentaFlow(personContactId)</span> — Ejecuta el Flow que envía el estado de cuenta por email al socio</li>
+</ul>
+</div></div>
+
+<!-- Lead -->
+<div id="apex-lead" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Lead</h2>
+
+<h3>LeadConvertController</h3>
+<ul>
+  <li><span class="pill">checkAccountIfExist(numeroDocumento)</span> — Busca si ya existe un PersonAccount con ese número de documento para evitar duplicados.</li>
+  <li><span class="pill">convertLead(leadId)</span> — Ejecuta la conversión del Lead a Account + Contact + Opportunity con los valores mapeados de los campos del Lead.</li>
+</ul>
+</div></div>
+
+<!-- Cases -->
+<div id="apex-cases" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Cases</h2>
+
+<h3>CaseIntegrationService / CaseIntegrationController / CaseIntegrationHelper</h3>
+<p>Conjunto de clases para la integración de casos con sistemas externos. Permite crear o actualizar casos desde datos del CRM AMTAE.</p>
+
+<h3>BatchMassCaseAssignment</h3>
+<p>Batch que realiza la asignación masiva de casos a colas o agentes según reglas definidas. Util para redistribución de carga de trabajo.</p>
+
+<h3>ReadCSVController</h3>
+<p>Lee y parsea un archivo CSV subido como ContentDocument para actualizar casos masivamente.</p>
+<ul>
+  <li><span class="pill">readCSVFile(idContentDocument, idRecord)</span></li>
+</ul>
+</div></div>
+
+<!-- Comercializadores -->
+<div id="apex-comercializadores" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Comercializadores</h2>
+
+<h3>GetComercializadoresService</h3>
+<p>Expone el método <span class="pill">GetComercializadoresByUser(usuario)</span> que devuelve la lista de comercializadores disponibles para un usuario ALMA dado, consultando el webservice de AMTAE.</p>
+
+<h3>GetComercializadorController</h3>
+<p>Controlador para el LWC <em>getComercializadoresLWC</em>. Ejecuta el batch de sincronización y expone el método de consulta de estado.</p>
+<ul>
+  <li><span class="pill">executeBatch()</span> — Lanza el batch de sync de comercializadores</li>
+  <li><span class="pill">getBatchStatus(jobId)</span> — Consulta el AsyncApexJob para monitoreo</li>
+</ul>
+
+<h3>ComercializadorController</h3>
+<p>Gestión CRUD de registros <span class="pill">Comercializador__c</span> dentro de Salesforce.</p>
+</div></div>
+
+<!-- Admin / Utilidades -->
+<div id="apex-admin" class="page">
+<div class="section-card">
+<h2>&#9881; Clases Apex — Admin / Utilidades</h2>
+
+<h3>CommonIntegrationUtil</h3>
+<p>Utilidades compartidas por las clases de integración: formateo de fechas, manejo de errores HTTP, logging estandarizado.</p>
+
+<h3>EventosController</h3>
+<p>Obtiene los eventos del CRM AMTAE asociados a un registro de Salesforce.</p>
+<ul>
+  <li><span class="pill">obtenerEventosMapa()</span> — Devuelve mapa id→nombre de tipos de evento (cacheable)</li>
+  <li><span class="pill">obtenerEventos(tipoRegistro, recordId)</span> — Lista de eventos del registro</li>
+</ul>
+
+<h3>EntradaMC_bulkAssign</h3>
+<p>Asignación masiva de registros <span class="pill">Medio_de_Cobro_entry__c</span> a sus Oportunidades correspondientes.</p>
+
+<h3>DetectarExsocios</h3>
+<p>Batch que detecta socios que ya no aparecen en el sistema AMTAE y actualiza su estado en Salesforce.</p>
+
+<h3>ConversationMessageDefinitionsInvocable / ConversationTemplateDetailsInvocable / SendConversationMessageInvocable</h3>
+<p>Clases invocables para el módulo de mensajería (Einstein Bots / Messaging). Permiten gestionar conversaciones desde Flows de Salesforce.</p>
+
+<h3>EndMessagingSession</h3>
+<p>Finaliza la sesión de mensajería activa desde un Flow o proceso automático.</p>
+
+<h3>Bot_CheckBusinessHours</h3>
+<p>Verificación de horario comercial para el bot de chat, usado en Flows de enrutamiento.</p>
+
+<h3>AccountChainedQueueable</h3>
+<p>Queueable encadenado para procesamiento asíncrono de accounts en cadena, evitando límites de CPU en operaciones masivas.</p>
+
+<h3>PicklistEntryValue</h3>
+<p>Wrapper para valores de picklist, usado por LWC que necesitan opciones dinámicas.</p>
+
+<h3>GraphicsPackController / TestGraphicsPackController</h3>
+<p>Controlador para la página VF <em>GraphicsPackLtng</em> que genera gráficos estadísticos.</p>
+</div></div>
+
+<!-- ===================== OBJETOS ===================== -->
+
+<!-- Account -->
+<div id="obj-account" class="page">
+<div class="section-card">
+<h2>&#128466; Account (PersonAccount)</h2>
+<p>Objeto central del sistema. Cada socio de AMTAE (titular o adherente) es un <strong>PersonAccount</strong> en Salesforce. Los campos con sufijo <span class="tag">__pc</span> son campos del Contact persona subyacente.</p>
+<h3>Campos custom clave</h3>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+<tr><td>Id_Titular__c</td><td>Text</td><td>ID del socio en el sistema AMTAE. Usado para generar URLs del portal de estado de cuenta.</td></tr>
+<tr><td>Estado_del_Socio__c</td><td>Picklist</td><td>Estado en AMTAE: Activo, Inactivo, Suspendido, etc.</td></tr>
+<tr><td>Plan__c</td><td>Text/Picklist</td><td>Plan de salud al que pertenece el socio.</td></tr>
+<tr><td>Tipo_Doc__pc</td><td>Picklist</td><td>Tipo de documento (DNI, Pasaporte, etc.)</td></tr>
+<tr><td>Numero_Documento__pc</td><td>Text</td><td>Número de documento. Usado para detección de duplicados en conversión de Lead.</td></tr>
+<tr><td>CUIT_Titular__pc</td><td>Text(11)</td><td>CUIT/CUIL. Requerido para validación CBU y cobros.</td></tr>
+<tr><td>Gender__pc</td><td>Picklist</td><td>Género del socio.</td></tr>
+<tr><td>Cumpleanios__pc</td><td>Date</td><td>Fecha de nacimiento.</td></tr>
+<tr><td>Age__pc</td><td>Number</td><td>Edad calculada del socio.</td></tr>
+<tr><td>Estado_Civil__pc</td><td>Picklist</td><td>Estado civil.</td></tr>
+<tr><td>Ocupacion__c</td><td>Picklist</td><td>Tipo de ocupación laboral. Controla campos adicionales en accountContainer.</td></tr>
+<tr><td>Provincia__pc</td><td>Picklist</td><td>Provincia. Filtra el selector de localidad.</td></tr>
+<tr><td>Prefijo_Celular__c</td><td>Text</td><td>Prefijo del teléfono celular.</td></tr>
+<tr><td>Email_MercadoPago__c</td><td>Email</td><td>Email utilizado para la suscripción de MercadoPago.</td></tr>
+</table></div>
+</div></div>
+
+<!-- Opportunity -->
+<div id="obj-opportunity" class="page">
+<div class="section-card">
+<h2>&#128466; Opportunity</h2>
+<p>Representa el <strong>proceso de afiliación</strong> de un titular. Cada Opportunity está vinculada a un PersonAccount titular y puede tener adherentes relacionados.</p>
+<h3>Campos custom clave</h3>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+<tr><td>Medio_de_Pago__c</td><td>Picklist</td><td>Forma de pago elegida: Tarjeta / CBU / Mercado Pago.</td></tr>
+<tr><td>Medio_Verificado__c</td><td>Checkbox</td><td>true cuando el medio de pago fue validado. Es prerequisito para el alta plenaria.</td></tr>
+<tr><td>Plan__c</td><td>Text</td><td>Código del plan de salud cotizado.</td></tr>
+<tr><td>Codigo_Comercializador__c</td><td>Text</td><td>ID del comercializador en AMTAE.</td></tr>
+<tr><td>Nombre_Comercializador__c</td><td>Text</td><td>Nombre del comercializador asignado.</td></tr>
+<tr><td>Con_recupero_mora__c</td><td>Checkbox</td><td>Indica si la oportunidad tiene un ítem de recupero de mora agregado.</td></tr>
+<tr><td>HasOpportunityLineItem</td><td>Boolean (std)</td><td>true si la Opp tiene al menos un producto cotizado. Requerido antes de procesar el pago.</td></tr>
+</table></div>
+<h3>StageName relevantes</h3>
+<ul>
+  <li><strong>Pendiente de Cierre</strong> — Estado requerido para crear suscripción MP</li>
+  <li>Otros estados estándar de pipeline de ventas</li>
+</ul>
+</div></div>
+
+<!-- Medio de Cobro -->
+<div id="obj-medcobro" class="page">
+<div class="section-card">
+<h2>&#128466; Medio_de_Cobro__c</h2>
+<p>Registra las <strong>suscripciones activas</strong> de cobro automático del socio, ya sea por MercadoPago o por Pago Uno.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+<tr><td>SubscriptionId__c</td><td>Text</td><td>ID de la suscripción en la API de MercadoPago.</td></tr>
+<tr><td>Monto__c</td><td>Currency</td><td>Monto mensual de la suscripción.</td></tr>
+<tr><td>Nombre_banco__c</td><td>Text</td><td>Nombre del banco (para cobros con tarjeta vía BIN lookup).</td></tr>
+<tr><td>Code__c</td><td>Text</td><td>Código BIN de la tarjeta (6, 4 o 2 dígitos). Usado para identificar el banco emisor.</td></tr>
+<tr><td>Estado__c</td><td>Picklist</td><td>Estado de la suscripción: Activa, Cancelada, Suspendida.</td></tr>
+</table></div>
+</div></div>
+
+<!-- Entrada MC -->
+<div id="obj-entradamc" class="page">
+<div class="section-card">
+<h2>&#128466; Medio_de_Cobro_entry__c</h2>
+<p>Registra los <strong>intentos y resultados de cobro</strong> individuales, tanto para CBU como para tarjeta de crédito. Es el log transaccional de los medios de pago.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+<tr><td>Tipo__c</td><td>Picklist</td><td>CBU o Tarjeta.</td></tr>
+<tr><td>Opportunity__c</td><td>Lookup(Opportunity)</td><td>Oportunidad a la que pertenece el cobro.</td></tr>
+<tr><td>CBU__c</td><td>Text(22)</td><td>Número de CBU validado.</td></tr>
+<tr><td>CUIT__c</td><td>Text(11)</td><td>CUIT/CUIL del titular del CBU.</td></tr>
+<tr><td>Token__c</td><td>Text</td><td>Token de tarjeta generado por Pago Uno.</td></tr>
+<tr><td>ExternalReference__c</td><td>Text</td><td>Referencia externa de la transacción en Pago Uno.</td></tr>
+</table></div>
+</div></div>
+
+<!-- SubscripcionSolicitud -->
+<div id="obj-subsol" class="page">
+<div class="section-card">
+<h2>&#128466; SubscripcionSolicitud__c</h2>
+<p>Registra las <strong>solicitudes de suscripción</strong> creadas en MercadoPago. Actúa como el registro maestro de cada suscripción de débito automático.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+<tr><td>Name</td><td>Text</td><td>Nombre de la suscripción (generalmente el plan).</td></tr>
+<tr><td>Monto__c</td><td>Currency</td><td>Monto mensual.</td></tr>
+<tr><td>SubscriptionId__c</td><td>Text</td><td>ID en MP.</td></tr>
+<tr><td>Estado__c</td><td>Picklist</td><td>Estado: authorized, cancelled, pending, paused.</td></tr>
+</table></div>
+</div></div>
+
+<!-- SubscripcionActualizacion -->
+<div id="obj-subact" class="page">
+<div class="section-card">
+<h2>&#128466; SubscripcionActualizacion__c</h2>
+<p>Registro de auditoría de cada <strong>modificación de términos</strong> de una suscripción de MercadoPago (cambios de monto o nombre). Permite tener trazabilidad completa de los cambios.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Tipo</th><th>Descripción</th></tr>
+<tr><td>SubscripcionSolicitud__c</td><td>Lookup</td><td>Relación a la suscripción original.</td></tr>
+<tr><td>NombreNuevo__c</td><td>Text</td><td>Nuevo nombre aplicado.</td></tr>
+<tr><td>MontoNuevo__c</td><td>Currency</td><td>Nuevo monto aplicado.</td></tr>
+<tr><td>FechaActualizacion__c</td><td>DateTime</td><td>Fecha del cambio.</td></tr>
+</table></div>
+</div></div>
+
+<!-- Geo -->
+<div id="obj-geo" class="page">
+<div class="section-card">
+<h2>&#128466; Localidad / Organismo / Filial</h2>
+
+<h3>Localidad__c</h3>
+<p>Catálogo de localidades de Argentina. Vinculado a la provincia para filtrar el selector en el formulario de Account.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Descripción</th></tr>
+<tr><td>ID_provincia__c</td><td>Código de provincia usado en el filtro de lookup de accountContainer</td></tr>
+<tr><td>Name</td><td>Nombre de la localidad</td></tr>
+</table></div>
+
+<h3>Organismo__c</h3>
+<p>Catálogo de organismos del Estado. Se relaciona con Account para empleados públicos y jubilados.</p>
+
+<h3>Filial__c</h3>
+<p>Filiales de AMTAE en distintas provincias. Se asigna automáticamente en el trigger de Account (<em>updateFiliales</em>) según la provincia del socio.</p>
+</div></div>
+
+<!-- Comercializador -->
+<div id="obj-comercializador" class="page">
+<div class="section-card">
+<h2>&#128466; Comercializador__c</h2>
+<p>Agentes o intermediarios que captan socios para AMTAE. Se sincroniza desde el sistema AMTAE vía batch (<em>getComercializadoresLWC</em>). Cada Opportunity puede tener un comercializador asignado.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Descripción</th></tr>
+<tr><td>Name</td><td>Nombre del comercializador</td></tr>
+<tr><td>Codigo__c</td><td>Código en AMTAE. Usado en AccountTriggerHandler para relacionar automáticamente.</td></tr>
+<tr><td>Usuario_Alma__c</td><td>Usuario del sistema ALMA al que pertenece el comercializador (para filtrado).</td></tr>
+</table></div>
+</div></div>
+
+<!-- Custom Metadata -->
+<div id="obj-metadata" class="page">
+<div class="section-card">
+<h2>&#128466; Custom Metadata</h2>
+
+<h3>MercadoPago__mdt</h3>
+<p>Almacena la configuración de conexión con la API de MercadoPago. Incluye el Access Token y el monto de validación para cobros de prueba.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Descripción</th></tr>
+<tr><td>AccessToken__c</td><td>Token de autenticación con la API de MP</td></tr>
+<tr><td>MP_Amount__c</td><td>Monto de validación para cobros de prueba (usado en validarPagoUno)</td></tr>
+<tr><td>BaseUrl__c</td><td>URL base de la API de MP</td></tr>
+</table></div>
+
+<h3>Monto_Validacion_Pago_Uno__mdt</h3>
+<p>Configuración del monto de validación específico para el flujo de Pago Uno.</p>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Descripción</th></tr>
+<tr><td>Monto__c</td><td>Monto de validación para tokenización de tarjeta en Pago Uno</td></tr>
+</table></div>
+</div></div>
+
+<!-- ===================== VF & AURA ===================== -->
+
+<!-- VF Pages -->
+<div id="vf-pages" class="page">
+<div class="section-card">
+<h2>&#128196; Visualforce Pages</h2>
+<p>El proyecto contiene principalmente páginas VF estándar del <strong>Salesforce Community / Experience Cloud</strong> generadas automáticamente al crear el sitio. Una página custom notable es <span class="pill">GraphicsPackLtng</span>.</p>
+
+<h3>Páginas de comunidad (estándar generadas)</h3>
+<div class="table-wrap"><table>
+<tr><th>Página</th><th>Propósito</th></tr>
+<tr><td>CommunitiesTemplate</td><td>Template base de la comunidad</td></tr>
+<tr><td>CommunitiesLogin / SiteLogin</td><td>Página de login del portal</td></tr>
+<tr><td>CommunitiesSelfReg / SiteRegister</td><td>Auto-registro de usuarios del portal</td></tr>
+<tr><td>CommunitiesSelfRegConfirm / SiteRegisterConfirm</td><td>Confirmación de registro</td></tr>
+<tr><td>CommunitiesLanding</td><td>Landing page de la comunidad</td></tr>
+<tr><td>ForgotPassword / ForgotPasswordConfirm</td><td>Recuperación de contraseña</td></tr>
+<tr><td>ChangePassword</td><td>Cambio de contraseña</td></tr>
+<tr><td>MyProfilePage</td><td>Página de perfil de usuario del portal</td></tr>
+<tr><td>AnswersHome / IdeasHome</td><td>Páginas de Answers e Ideas (módulos de comunidad)</td></tr>
+<tr><td>FileNotFound / Unauthorized / Exception / StdExceptionTemplate</td><td>Páginas de error del sitio</td></tr>
+<tr><td>InMaintenance / UnderConstruction / BandwidthExceeded</td><td>Páginas de estado del sitio</td></tr>
+<tr><td>MicrobatchSelfReg</td><td>Auto-registro optimizado por microbatch</td></tr>
+</table></div>
+
+<h3>Páginas custom</h3>
+<div class="table-wrap"><table>
+<tr><th>Página</th><th>Propósito</th></tr>
+<tr><td>GraphicsPackLtng</td><td>Genera gráficos estadísticos para reportes internos. Usa GraphicsPackController.</td></tr>
+<tr><td>ESWAmtaewebchat1742567979849</td><td>Página de Embedded Service Web Chat (chat online de AMTAE). Generada por el setup de Chat de Salesforce.</td></tr>
+<tr><td>SiteTemplate</td><td>Template del sitio público de AMTAE (amtae.salesforcesites.com.ar)</td></tr>
+</table></div>
+</div></div>
+
+<!-- Aura Components -->
+<div id="aura-components" class="page">
+<div class="section-card">
+<h2>&#128196; Aura Components</h2>
+
+<h3>CobroUnoLwc</h3>
+<p><strong>Propósito:</strong> Componente Aura placeholder. Contiene solo un botón de acción sin lógica. Probablemente fue el punto de entrada original para el cobro con Pago Uno, antes de ser reemplazado por el LWC <em>validarPagoUno</em>.</p>
+<div class="alert">Componente sin funcionalidad activa. Considerar eliminar si se confirma que no está en uso.</div>
+
+<h3>TrasnferMessagingSession</h3>
+<p><strong>Propósito:</strong> Formulario Aura para crear un registro de <span class="pill">Messaging_Session_Transfer__c</span>. Permite transferir una sesión de chat activa a otro agente u organismo, registrando la transferencia con motivo y destino.</p>
+<div class="table-wrap"><table>
+<tr><th>Objeto</th><th>Campos</th></tr>
+<tr><td>Messaging_Session_Transfer__c</td><td>Motivo__c, Destino__c, Agente__c, Fecha__c</td></tr>
+</table></div>
+
+<h3>override_nueva_oportunidad</h3>
+<p><strong>Propósito:</strong> Override Aura de la acción "Nueva Oportunidad". En vez del formulario estándar, abre un modal que lanza un <strong>Flow de Salesforce</strong> para guiar la creación de la oportunidad con lógica de negocio personalizada.</p>
+
+<h3>NavigateToRecord</h3>
+<p><strong>Propósito:</strong> Componente de navegación utilitario para Flows. Permite que un Flow navegue programáticamente a un registro específico de Salesforce sin necesidad de código JavaScript adicional.</p>
+</div></div>
+
+</main>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .nav-sub').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById(id);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('[onclick]').forEach(el => {
+    if (el.getAttribute('onclick') === `show('${id}')`) el.classList.add('active');
+  });
+}
+
+function toggleGroup(el) {
+  el.classList.toggle('open');
+  const items = el.nextElementSibling;
+  items.classList.toggle('open');
+}
+
+// Open all groups by default
+document.querySelectorAll('.nav-group-title').forEach(g => {
+  if (g.classList.contains('open')) {
+    g.nextElementSibling.classList.add('open');
+  }
+});
+</script>
+</body>
+</html>
